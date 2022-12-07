@@ -1,0 +1,11 @@
+port: "8080"
+csv_path: "data/entrance.csv"
+cors_domains: 
+  - "*"
+cors_headers: 
+  - "*"
+cors_methods:
+  - "GET"
+  - "POST"
+cors_allow_credentials: true
+cors_max_age: 86400

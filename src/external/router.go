@@ -5,12 +5,17 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/LightBells/ofls_entrance_system/src/adapter/controllers"
+	"github.com/LightBells/ofls_entrance_system/src/external/config"
 	"github.com/LightBells/ofls_entrance_system/src/external/csv"
-	"github.com/LightBells/ofls_entrance_system/src/external/interfaces"
 )
 
-func Run(config interfaces.Config) {
+func Run(path string) {
 	router := gin.Default()
+
+	config, err := config.ReadYaml(path)
+	if err != nil {
+		panic(err)
+	}
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     config.GetCORSDomains(),
