@@ -59,6 +59,27 @@ func (lc *LogController) Get(c interfaces.Context) {
 }
 
 func (lc *LogController) GetByMonth(c interfaces.Context) {
+	if c.GetHeader("Accept") == "text/csv" {
+		lc.getByMonthReturnInCsv(c)
+	} else {
+		lc.getByMonthReturnInJson(c)
+	}
+}
+
+func (lc *LogController) getByMonthReturnInCsv(c interfaces.Context) {
+	month := c.Param("month")
+	logs, err := lc.Interactor.GetByMonthInCsv(month)
+	if err != nil {
+		c.JSON(500, NewError(500, err.Error()))
+		return
+	}
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename="+month+"logs.csv")
+	c.String(200, logs)
+}
+
+func (lc *LogController) getByMonthReturnInJson(c interfaces.Context) {
 	type (
 		Log struct {
 			ID            string `json:"id"`
@@ -96,5 +117,6 @@ func (lc *LogController) GetByMonth(c interfaces.Context) {
 		Logs: jsonLogs,
 	}
 
+	c.Header("Content-Type", "application/json")
 	c.JSON(200, response)
 }

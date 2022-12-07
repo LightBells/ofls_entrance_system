@@ -28,6 +28,14 @@ func (r *LogRepository) FindAll() (domain.LogSlice, error) {
 	return logs, nil
 }
 
+func (r *LogRepository) RepresentInCsv(logs domain.LogSlice) (string, error) {
+	csvString, err := r.csvHandler.ConvertToCSVString(&logs)
+	if err != nil {
+		return "", err
+	}
+	return csvString, nil
+}
+
 func NewLogRepository(handler interfaces.CSVHandler) *LogRepository {
 	return &LogRepository{
 		csvHandler: handler,

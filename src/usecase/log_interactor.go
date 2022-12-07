@@ -37,3 +37,17 @@ func (i *LogInteractor) GetByMonth(month string) (domain.LogSlice, error) {
 
 	return logs, nil
 }
+
+func (i *LogInteractor) GetByMonthInCsv(month string) (string, error) {
+	logs, err := i.GetByMonth(month)
+	if err != nil {
+		return "", err
+	}
+
+	csvString, err := i.LogRepository.RepresentInCsv(logs)
+	if err != nil {
+		return "", err
+	}
+
+	return csvString, nil
+}

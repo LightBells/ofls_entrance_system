@@ -1,6 +1,7 @@
 package external
 
 import (
+	"bytes"
 	"encoding/csv"
 	"io"
 	"os"
@@ -85,4 +86,26 @@ func (h *CSVHandler) WriteCSV(logs *domain.LogSlice, path string) error {
 	}
 	writer.Flush()
 	return nil
+}
+
+func (h *CSVHandler) ConvertToCSVString(logs *domain.LogSlice) (string, error) {
+	buf := new(bytes.Buffer)
+	writer := csv.NewWriter(buf)
+
+	writer.Write([]string{"ID", "Date", "Entry_time", "Exit_time", "Purpose", "Satisfication"})
+	for _, log := range *logs {
+		purpose := strconv.Itoa(log.Purpose)
+		if purpose == "-1" {
+			purpose = ""
+		}
+
+		satisfication := strconv.Itoa(log.Satisfication)
+		if satisfication == "-1" {
+			satisfication = ""
+		}
+
+		writer.Write([]string{log.ID, log.Date, log.Entry_time, log.Exit_time, purpose, satisfication})
+	}
+	writer.Flush()
+	return buf.String(), nil
 }
