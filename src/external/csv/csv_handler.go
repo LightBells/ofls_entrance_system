@@ -1,4 +1,4 @@
-package csv
+package external
 
 import (
 	"encoding/csv"
@@ -25,6 +25,13 @@ func (h *CSVHandler) ReadCSV(logs *domain.Logs) error {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
+
+	// ヘッダーを読み飛ばす
+	_, err = reader.Read()
+	if err == io.EOF {
+		return err
+	}
+
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
@@ -33,14 +40,21 @@ func (h *CSVHandler) ReadCSV(logs *domain.Logs) error {
 		if err != nil {
 			return err
 		}
-		purpose, err := strconv.Atoi(record[4])
-		if err != nil {
-			return err
+
+		purpose := -1
+		if record[4] != "" {
+			purpose, err = strconv.Atoi(record[4])
+			if err != nil {
+				return err
+			}
 		}
 
-		satisfication, err := strconv.Atoi(record[5])
-		if err != nil {
-			return err
+		satisfication := -1
+		if record[5] != "" {
+			satisfication, err = strconv.Atoi(record[5])
+			if err != nil {
+				return err
+			}
 		}
 
 		log := domain.Log{

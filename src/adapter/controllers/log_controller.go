@@ -10,7 +10,7 @@ type LogController struct {
 	Interactor usecase.LogInteractor
 }
 
-func NewLogController(handler *interfaces.CSVHandler) *LogController {
+func NewLogController(handler interfaces.CSVHandler) *LogController {
 	return &LogController{
 		Interactor: usecase.LogInteractor{
 			LogRepository: gateway.NewLogRepository(handler),
@@ -28,7 +28,9 @@ func (lc *LogController) Get(c interfaces.Context) {
 			Purpose       int    `json:"purpose"`
 			Satisfication int    `json:"satisfication"`
 		}
-		Response []Log
+		Response struct {
+			Logs []Log `json:"logs"`
+		}
 	)
 
 	logs, err := lc.Interactor.Get()
@@ -36,9 +38,10 @@ func (lc *LogController) Get(c interfaces.Context) {
 		c.JSON(500, NewError(500, err.Error()))
 		return
 	}
-	res := Response{}
+
+	jsonLogs := []Log{}
 	for _, log := range logs {
-		res = append(res, Log{
+		jsonLogs = append(jsonLogs, Log{
 			ID:            log.ID,
 			Date:          log.Date,
 			Entry_time:    log.Entry_time,
@@ -48,5 +51,9 @@ func (lc *LogController) Get(c interfaces.Context) {
 		})
 	}
 
-	c.JSON(200, res)
+	response := Response{
+		Logs: jsonLogs,
+	}
+
+	c.JSON(200, response)
 }

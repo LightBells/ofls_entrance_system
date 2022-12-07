@@ -7,7 +7,7 @@ import (
 
 type (
 	LogRepository struct {
-		csvHandler *interfaces.CSVHandler
+		csvHandler interfaces.CSVHandler
 	}
 
 	Log struct {
@@ -22,13 +22,13 @@ type (
 
 func (r *LogRepository) FindAll() (domain.Logs, error) {
 	logs := domain.Logs{}
-	if err := (*r.csvHandler).ReadCSV(&logs); err != nil {
+	if err := r.csvHandler.ReadCSV(&logs); err != nil {
 		return nil, err
 	}
 	return logs, nil
 }
 
-func NewLogRepository(handler *interfaces.CSVHandler) *LogRepository {
+func NewLogRepository(handler interfaces.CSVHandler) *LogRepository {
 	return &LogRepository{
 		csvHandler: handler,
 	}
