@@ -12,13 +12,17 @@ jobs:
     name: Setup release
     runs-on: ubuntu-latest
     steps:
+    - name: Get the version
+      id: get_version
+      # gitコマンドを使ってSHORT SHAを取得
+      run: echo ::set-output name=VERSION::$(git rev-parse --short HEAD)
     - name: Create release
       id: create_release
       uses: actions/create-release@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
