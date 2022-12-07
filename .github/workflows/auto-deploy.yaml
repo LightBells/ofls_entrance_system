@@ -106,6 +106,7 @@ jobs:
       env:
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.arch }}
+        target_name: $${{matrix.target_name}}
       run: |
         mkdir dist
         cp config.yaml dist/
