@@ -80,12 +80,15 @@ jobs:
         - os: mac64
           goos: darwin
           arch: amd64
+          target_name: app
         - os: lin64
           goos: linux
           arch: amd64
+          target_name: app
         - os: win64
           goos: windows
           arch: amd64
+          target_name: app.exe
 
     steps:
     - name: Set up Go 1.13
@@ -106,7 +109,7 @@ jobs:
       run: |
         mkdir dist
         cp config.yaml dist/
-        GOOS=$goos GOARCH=$goarch go build -v -o dist/app .
+        GOOS=$goos GOARCH=$goarch go build -v -o dist/${{target_name}} .
         zip -j -r release dist
     - name: Download artifact to get url to upload to release
       uses: actions/download-artifact@v1
