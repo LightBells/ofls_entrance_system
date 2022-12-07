@@ -105,7 +105,7 @@ jobs:
         goarch: ${{ matrix.arch }}
       run: |
         mkdir dist
-        cp test.txt dist/
+        cp config.yaml dist/
         GOOS=$goos GOARCH=$goarch go build -v -o dist/app .
         zip -j -r release dist
     - name: Download artifact to get url to upload to release
