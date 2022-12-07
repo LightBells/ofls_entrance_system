@@ -9,6 +9,9 @@ type Config interface {
 
 	GetCSVPath() string
 	GetStaticPath() string
+	GetSecretPath() string
+	GetJWTRealm() string
+	GetAdminPassword() string
 
 	GetCORSDomains() []string
 	GetCORSHeaders() []string

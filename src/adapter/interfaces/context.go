@@ -5,6 +5,7 @@ type Context interface {
 	GetHeader(string) string
 	String(int, string, ...interface{})
 	Param(string) string
+	PostForm(string) string
 	Bind(interface{}) error
 	Status(int)
 	JSON(int, interface{})
