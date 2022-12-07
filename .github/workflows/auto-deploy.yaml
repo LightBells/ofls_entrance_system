@@ -10,7 +10,6 @@ on:
 jobs:
   setup-release:
     name: Setup release
-    needs: test # This workflow is executed after completed 'test' job
     runs-on: ubuntu-latest
     steps:
     - name: Create release
