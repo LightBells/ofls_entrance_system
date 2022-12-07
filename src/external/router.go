@@ -9,13 +9,8 @@ import (
 	"github.com/LightBells/ofls_entrance_system/src/external/csv"
 )
 
-func Run(path string) {
+func Run(config config.Config) {
 	router := gin.Default()
-
-	config, err := config.ReadYaml(path)
-	if err != nil {
-		panic(err)
-	}
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     config.GetCORSDomains(),
@@ -28,9 +23,12 @@ func Run(path string) {
 	csvHandler := external.NewCSVHandler(config.GetCSVPath())
 	logController := controllers.NewLogController(csvHandler)
 
+	router.Static("/statics", "./statics")
 	router.GET("/v1/logs", func(c *gin.Context) {
 		logController.Get(c)
 	})
-
+	router.GET("/v1/logs/monthly/:month", func(c *gin.Context) {
+		logController.GetByMonth(c)
+	})
 	router.Run(":" + config.GetPort())
 }

@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	external.Run("./config.yaml")
+	external.Initialize("./config.yaml")
 }

@@ -1,5 +1,6 @@
 port: "8080"
 csv_path: "data/entrance.csv"
+static_files: "./statics"
 cors_domains: 
   - "*"
 cors_headers: 

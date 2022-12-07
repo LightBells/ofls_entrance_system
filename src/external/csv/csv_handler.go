@@ -1,6 +1,7 @@
 package external
 
 import (
+	"bytes"
 	"encoding/csv"
 	"io"
 	"os"
@@ -17,7 +18,7 @@ func NewCSVHandler(path string) *CSVHandler {
 	return &CSVHandler{path}
 }
 
-func (h *CSVHandler) ReadCSV(logs *domain.Logs) error {
+func (h *CSVHandler) ReadCSV(logs *domain.LogSlice) error {
 	file, err := os.Open(h.path)
 	if err != nil {
 		return err
@@ -69,4 +70,42 @@ func (h *CSVHandler) ReadCSV(logs *domain.Logs) error {
 		*logs = append(*logs, log)
 	}
 	return nil
+}
+
+func (h *CSVHandler) WriteCSV(logs *domain.LogSlice, path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	writer.Write([]string{"ID", "Date", "Entry_time", "Exit_time", "Purpose", "Satisfication"})
+	for _, log := range *logs {
+		writer.Write([]string{log.ID, log.Date, log.Entry_time, log.Exit_time, strconv.Itoa(log.Purpose), strconv.Itoa(log.Satisfication)})
+	}
+	writer.Flush()
+	return nil
+}
+
+func (h *CSVHandler) ConvertToCSVString(logs *domain.LogSlice) (string, error) {
+	buf := new(bytes.Buffer)
+	writer := csv.NewWriter(buf)
+
+	writer.Write([]string{"ID", "Date", "Entry_time", "Exit_time", "Purpose", "Satisfication"})
+	for _, log := range *logs {
+		purpose := strconv.Itoa(log.Purpose)
+		if purpose == "-1" {
+			purpose = ""
+		}
+
+		satisfication := strconv.Itoa(log.Satisfication)
+		if satisfication == "-1" {
+			satisfication = ""
+		}
+
+		writer.Write([]string{log.ID, log.Date, log.Entry_time, log.Exit_time, purpose, satisfication})
+	}
+	writer.Flush()
+	return buf.String(), nil
 }
