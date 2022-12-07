@@ -30,5 +30,8 @@ func Run(config config.Config) {
 	router.GET("/v1/logs/monthly/:month", func(c *gin.Context) {
 		logController.GetByMonth(c)
 	})
+	router.GET("/v1/logs/id/:id", func(c *gin.Context) {
+		logController.GetById(c)
+	})
 	router.Run(":" + config.GetPort())
 }

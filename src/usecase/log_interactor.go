@@ -51,3 +51,17 @@ func (i *LogInteractor) GetByMonthInCsv(month string) (string, error) {
 
 	return csvString, nil
 }
+
+// Get by id
+func (i *LogInteractor) GetById(id string) (domain.LogSlice, error) {
+	logs, err := i.LogRepository.FindAll()
+	if err != nil {
+		return domain.LogSlice{}, err
+	}
+
+	filtered := logs.Where(func(log domain.Log) bool {
+		return log.ID == id
+	})
+
+	return filtered, nil
+}
