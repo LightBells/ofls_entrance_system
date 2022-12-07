@@ -9,6 +9,9 @@ type ConfigImpl struct {
 	Port                 string   `yaml:"port"`
 	CSVPath              string   `yaml:"csv_path"`
 	StaticPath           string   `yaml:"static_files"`
+	SecretPath           string   `yaml:"secret_path"`
+	JWTRealm             string   `yaml:"jwt_realm"`
+	AdminPassword        string   `yaml:"admin_password"`
 	CORSDomains          []string `yaml:"cors_domains"`
 	CORSHeaders          []string `yaml:"cors_headers"`
 	CORSMethods          []string `yaml:"cors_methods"`
@@ -26,6 +29,18 @@ func (c *ConfigImpl) GetCSVPath() string {
 
 func (c *ConfigImpl) GetStaticPath() string {
 	return c.StaticPath
+}
+
+func (c *ConfigImpl) GetSecretPath() string {
+	return c.SecretPath
+}
+
+func (c *ConfigImpl) GetJWTRealm() string {
+	return c.JWTRealm
+}
+
+func (c *ConfigImpl) GetAdminPassword() string {
+	return c.AdminPassword
 }
 
 func (c *ConfigImpl) GetCORSDomains() []string {
@@ -52,6 +67,9 @@ func (data *ConfigImpl) Print() {
 	fmt.Println("Port:", data.GetPort())
 	fmt.Println("CSVPath:", data.GetCSVPath())
 	fmt.Println("StaticPath:", data.GetStaticPath())
+	fmt.Println("SecretPath:", data.GetSecretPath())
+	fmt.Println("JWTRealm:", data.GetJWTRealm())
+	fmt.Println("AdminPassword:XXXXXXXXXXXXXX")
 	fmt.Println("CORSDomains:", data.GetCORSDomains())
 	fmt.Println("CORSHeaders:", data.GetCORSHeaders())
 	fmt.Println("CORSMethods:", data.GetCORSMethods())
