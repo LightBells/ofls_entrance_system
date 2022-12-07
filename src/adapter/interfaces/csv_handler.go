@@ -5,5 +5,6 @@ import (
 )
 
 type CSVHandler interface {
-	ReadCSV(*domain.Logs) error
+	ReadCSV(*domain.LogSlice) error
+	WriteCSV(*domain.LogSlice, string) error
 }

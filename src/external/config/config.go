@@ -8,6 +8,7 @@ type Config interface {
 	GetPort() string
 
 	GetCSVPath() string
+	GetStaticPath() string
 
 	GetCORSDomains() []string
 	GetCORSHeaders() []string

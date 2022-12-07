@@ -9,6 +9,10 @@ require (
 )
 
 require (
+	github.com/clipperhouse/fsnotify v1.1.0 // indirect
+	github.com/clipperhouse/gen v4.1.1+incompatible // indirect
+	github.com/clipperhouse/slice v0.0.0-20200107170738-a74fc3888fd9 // indirect
+	github.com/clipperhouse/typewriter v0.0.0-20200107164453-d21420026310 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -25,6 +29,7 @@ require (
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
 	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/tools v0.0.0-20200107050322-53017a39ae36 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

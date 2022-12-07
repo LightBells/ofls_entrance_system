@@ -20,8 +20,8 @@ type (
 	}
 )
 
-func (r *LogRepository) FindAll() (domain.Logs, error) {
-	logs := domain.Logs{}
+func (r *LogRepository) FindAll() (domain.LogSlice, error) {
+	logs := domain.LogSlice{}
 	if err := r.csvHandler.ReadCSV(&logs); err != nil {
 		return nil, err
 	}

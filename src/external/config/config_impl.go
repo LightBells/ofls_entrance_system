@@ -8,6 +8,7 @@ import (
 type ConfigImpl struct {
 	Port                 string   `yaml:"port"`
 	CSVPath              string   `yaml:"csv_path"`
+	StaticPath           string   `yaml:"static_files"`
 	CORSDomains          []string `yaml:"cors_domains"`
 	CORSHeaders          []string `yaml:"cors_headers"`
 	CORSMethods          []string `yaml:"cors_methods"`
@@ -21,6 +22,10 @@ func (c *ConfigImpl) GetPort() string {
 
 func (c *ConfigImpl) GetCSVPath() string {
 	return c.CSVPath
+}
+
+func (c *ConfigImpl) GetStaticPath() string {
+	return c.StaticPath
 }
 
 func (c *ConfigImpl) GetCORSDomains() []string {
@@ -46,6 +51,7 @@ func (c *ConfigImpl) GetCORSMaxAge() time.Duration {
 func (data *ConfigImpl) Print() {
 	fmt.Println("Port:", data.GetPort())
 	fmt.Println("CSVPath:", data.GetCSVPath())
+	fmt.Println("StaticPath:", data.GetStaticPath())
 	fmt.Println("CORSDomains:", data.GetCORSDomains())
 	fmt.Println("CORSHeaders:", data.GetCORSHeaders())
 	fmt.Println("CORSMethods:", data.GetCORSMethods())
