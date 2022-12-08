@@ -1,7 +1,7 @@
 port: "8080"
 csv_path: "data/entrance.csv"
 static_files: "./statics"
-secret_path: "./private.key"
+secret_path: "../configs/private.key"
 jwt_realm: "ofls"
 admin_password: "ofls_pass"
 cors_domains: 
