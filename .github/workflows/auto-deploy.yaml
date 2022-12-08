@@ -76,6 +76,7 @@ jobs:
         goarch: ${{ matrix.arch }}
         target: ${{ matrix.target }}
       run: |
+        cd backend
         mkdir dist
         cp config.yaml dist/
         GOOS=$goos GOARCH=$goarch go build -v -o dist/$target .
