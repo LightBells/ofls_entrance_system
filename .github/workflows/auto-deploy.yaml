@@ -77,10 +77,10 @@ jobs:
         target: ${{ matrix.target }}
       run: |
         cd backend
-        mkdir dist
-        cp config.yaml dist/
-        GOOS=$goos GOARCH=$goarch go build -v -o dist/$target .
-        zip -j -r release dist
+        mkdir ../dist
+        cp config.yaml ../dist/
+        GOOS=$goos GOARCH=$goarch go build -v -o ../dist/$target .
+        zip -j -r ../release ../dist
     - name: Download artifact to get url to upload to release
       uses: actions/download-artifact@v1
       with:
