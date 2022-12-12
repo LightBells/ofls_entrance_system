@@ -17,7 +17,7 @@ type Log struct {
 // 変換エラーは握りつぶしてるので注意
 func (l *Log) EnterAt() time.Time {
 	dateStr := l.Date + " " + l.Entry_time
-	t, _ := time.Parse("2006/01/02 15:04:05", dateStr)
+	t, _ := time.Parse("01/02/2006 15:04:05", dateStr)
 	return t
 }
 

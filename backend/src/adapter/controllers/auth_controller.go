@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/ken109/gin-jwt"
 
 	"github.com/LightBells/ofls_entrance_system/src/adapter/interfaces"
@@ -14,10 +15,23 @@ func NewAuthController() *AuthController {
 }
 
 func (ac *AuthController) Login(c interfaces.Context, config interfaces.Config) {
-	id := c.PostForm("id")
-	password := c.PostForm("password")
+	type User struct {
+		ID       string `json:"id"`
+		Password string `json:"password"`
+	}
+	type Credentials struct {
+		User User `json:"user"`
+	}
 
-	if id != "admin" || password != config.GetAdminPassword() {
+	var credentials Credentials
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		c.JSON(400, NewError(400, "Malformed JSON"))
+		return
+	}
+
+	fmt.Println(credentials)
+
+	if credentials.User.ID != "admin" || credentials.User.Password != config.GetAdminPassword() {
 		c.JSON(401, NewError(401, "invalid id or password"))
 		return
 	}
