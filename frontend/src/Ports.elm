@@ -1,5 +1,6 @@
-port module Ports exposing (clearUser, refreshReceiver, saveUser)
+port module Ports exposing (clearUser, refreshReceiver, saveNameList, saveUser)
 
+import Api.NameList exposing (NameDict)
 import Api.User exposing (User)
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -43,3 +44,11 @@ refreshReceiver msg =
         (\_ ->
             msg
         )
+
+
+saveNameList : NameDict -> Cmd msg
+saveNameList nameList =
+    outgoing
+        { tag = "saveNameList"
+        , data = Api.NameList.encodeJson nameList
+        }
