@@ -23,5 +23,12 @@ view =
         , height (px 50)
         , Background.color black
         ]
-        [ el [ Font.color white ] <| text "Footer"
+        [ el
+            [ Font.color white
+            , Font.size 4
+            , Font.center
+            ]
+          <|
+            text
+                "© 2022 Hikaru Takahashi"
         ]

@@ -66,6 +66,10 @@ func (lc *LogController) GetByMonth(c interfaces.Context) {
 	}
 }
 
+func (lc *LogController) GetByMonthCsv(c interfaces.Context) {
+	lc.getByMonthReturnInCsv(c)
+}
+
 func (lc *LogController) getByMonthReturnInCsv(c interfaces.Context) {
 	month := c.Param("month")
 	logs, err := lc.Interactor.GetByMonthInCsv(month)

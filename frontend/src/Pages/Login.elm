@@ -7,6 +7,7 @@ import Components.Footer
 import Effect exposing (Effect)
 import Element exposing (..)
 import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import Gen.Params.Login exposing (Params)
@@ -122,53 +123,58 @@ view : Model -> View Msg
 view model =
     { title = "Login"
     , element =
-        el
-            [ centerX
-            , centerY
+        column
+            [ width fill
+            , height fill
             ]
-        <|
-            column []
-                [ column
-                    [ height fill
-                    ]
-                    [ column
-                        [ Font.color (Element.rgb255 0 0 0)
-                        , Font.size 40
-                        , Font.center
-                        , width fill
-                        ]
-                        [ el [ centerX ] <| text "OFLS"
-                        , el [ centerX ] <| text "Entry Management System"
-                        , el [ centerX ] <| text "Login"
-                        ]
-                    , Input.username
-                        [ Events.onEnter AttemptedSignIn
-                        ]
-                        { text = model.id
-                        , onChange = Updated ID
-                        , placeholder = Just (Input.placeholder [] (text "ID"))
-                        , label = Input.labelHidden "ID"
-                        }
-                    , Input.currentPassword
-                        [ Events.onEnter AttemptedSignIn ]
-                        { text = model.password
-                        , onChange = Updated Password
-                        , placeholder = Just (Input.placeholder [] (text "Password"))
-                        , label = Input.labelHidden "Password"
-                        , show = False
-                        }
-                    , loginButton
-                    , case model.user of
-                        Api.Data.Failure error ->
-                            el [ centerX ] <|
-                                column []
-                                    (List.map (\message -> text message) error)
-
-                        _ ->
-                            text ""
-                    ]
-                , Components.Footer.view
+            [ el
+                [ centerX
+                , centerY
                 ]
+              <|
+                column []
+                    [ column
+                        [ height fill
+                        ]
+                        [ column
+                            [ Font.color (Element.rgb255 0 0 0)
+                            , Font.size 40
+                            , Font.center
+                            , paddingXY 10 30
+                            , width fill
+                            ]
+                            [ el [ centerX ] <| text "OFLS"
+                            , el [ centerX ] <| text "Entry Management System"
+                            ]
+                        , Input.username
+                            [ Events.onEnter AttemptedSignIn
+                            ]
+                            { text = model.id
+                            , onChange = Updated ID
+                            , placeholder = Just (Input.placeholder [] (text "ID"))
+                            , label = Input.labelHidden "ID"
+                            }
+                        , Input.currentPassword
+                            [ Events.onEnter AttemptedSignIn ]
+                            { text = model.password
+                            , onChange = Updated Password
+                            , placeholder = Just (Input.placeholder [] (text "Password"))
+                            , label = Input.labelHidden "Password"
+                            , show = False
+                            }
+                        , loginButton
+                        , case model.user of
+                            Api.Data.Failure error ->
+                                el [ centerX ] <|
+                                    column []
+                                        (List.map (\message -> text message) error)
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
+            , Components.Footer.view
+            ]
     }
 
 
@@ -191,6 +197,7 @@ loginButton =
             [ Background.color blue ]
         , width fill
         , padding 10
+        , Border.rounded 4
         , Font.center
         ]
         { onPress = Just AttemptedSignIn

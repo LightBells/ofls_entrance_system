@@ -8,6 +8,7 @@ module Shared exposing
     , view
     )
 
+import Api.NameList
 import Api.User exposing (User)
 import Element exposing (..)
 import Json.Decode as Json
@@ -21,7 +22,9 @@ type alias Flags =
 
 
 type alias Model =
-    { user : Maybe User }
+    { user : Maybe User
+    , name_dict : Maybe Api.NameList.NameDict
+    }
 
 
 init : Request -> Flags -> ( Model, Cmd Msg )
@@ -31,8 +34,13 @@ init _ flags =
             flags
                 |> Json.decodeValue (Json.field "user" Api.User.decoder)
                 |> Result.toMaybe
+
+        name_dict =
+            flags
+                |> Json.decodeValue (Json.field "name_dict" Api.NameList.decodeJson)
+                |> Result.toMaybe
     in
-    ( Model user
+    ( Model user name_dict
     , Cmd.none
     )
 

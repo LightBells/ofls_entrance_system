@@ -1,7 +1,9 @@
 module Api.Data exposing (..)
 
+import Bytes
+import Csv.Decode as CsvDecode
 import Http
-import Json.Decode as Decode
+import Json.Decode as JsonDecode
 
 
 type Data value
@@ -41,7 +43,26 @@ toMaybe data =
             Nothing
 
 
-expectJson : (Data value -> msg) -> Decode.Decoder value -> Http.Expect msg
+resolve : (body -> Result String a) -> Http.Response body -> Result Http.Error a
+resolve toResult response =
+    case response of
+        Http.BadUrl_ url_ ->
+            Err (Http.BadUrl url_)
+
+        Http.Timeout_ ->
+            Err Http.Timeout
+
+        Http.NetworkError_ ->
+            Err Http.NetworkError
+
+        Http.BadStatus_ metadata _ ->
+            Err (Http.BadStatus metadata.statusCode)
+
+        Http.GoodStatus_ _ body ->
+            Result.mapError Http.BadBody (toResult body)
+
+
+expectJson : (Data value -> msg) -> JsonDecode.Decoder value -> Http.Expect msg
 expectJson toMsg decoder =
     Http.expectStringResponse (fromResult >> toMsg) <|
         \response ->
@@ -55,34 +76,78 @@ expectJson toMsg decoder =
                 Http.NetworkError_ ->
                     Err [ "Network error" ]
 
-                Http.BadStatus_ _ body ->
-                    case Decode.decodeString errorDecoder body of
+                Http.BadStatus_ meta body ->
+                    case JsonDecode.decodeString errorJsonDecoder body of
                         Ok errors ->
                             Err errors
 
                         Err _ ->
-                            Err [ "Bad status code" ]
+                            Err [ "Bad status code: " ++ meta.statusText ]
 
                 Http.GoodStatus_ _ body ->
-                    case Decode.decodeString decoder body of
+                    case JsonDecode.decodeString decoder body of
                         Ok value ->
                             Ok value
 
                         Err error ->
-                            Err [ Decode.errorToString error ]
+                            Err [ JsonDecode.errorToString error ]
 
 
-errorDecoder : Decode.Decoder (List String)
-errorDecoder =
-    Decode.keyValuePairs (Decode.list Decode.string)
-        |> Decode.field "errors"
-        |> Decode.map
+errorJsonDecoder : JsonDecode.Decoder (List String)
+errorJsonDecoder =
+    JsonDecode.keyValuePairs (JsonDecode.list JsonDecode.string)
+        |> JsonDecode.field "errors"
+        |> JsonDecode.map
             (List.concatMap
                 (\( key, values ) ->
                     values
                         |> List.map (\value -> key ++ ": " ++ value)
                 )
             )
+
+
+errorCsvDecoder : CsvDecode.Error -> String
+errorCsvDecoder error =
+    CsvDecode.errorToString error
+
+
+fromHttpResult : Result Http.Error Bytes.Bytes -> Data Bytes.Bytes
+fromHttpResult result =
+    case result of
+        Ok value ->
+            Success value
+
+        Err error ->
+            Failure [ decodeHttpError error ]
+
+
+decodeHttpError : Http.Error -> String
+decodeHttpError error =
+    case error of
+        Http.BadUrl url ->
+            "Bad URL: " ++ url
+
+        Http.Timeout ->
+            "Timeout"
+
+        Http.NetworkError ->
+            "Network error"
+
+        Http.BadStatus statusCode ->
+            "Bad status code: " ++ String.fromInt statusCode
+
+        Http.BadBody body ->
+            "Bad body: " ++ body
+
+
+fromCsvResult : Result CsvDecode.Error value -> Data value
+fromCsvResult result =
+    case result of
+        Ok value ->
+            Success value
+
+        Err error ->
+            Failure [ errorCsvDecoder error ]
 
 
 fromResult : Result (List String) value -> Data value

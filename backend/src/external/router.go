@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/ken109/gin-jwt"
+	"time"
 
 	"github.com/LightBells/ofls_entrance_system/src/adapter/controllers"
 	"github.com/LightBells/ofls_entrance_system/src/external/config"
@@ -41,6 +42,9 @@ func Run(config config.Config) {
 	logs.GET("/monthly/:month", func(c *gin.Context) {
 		logController.GetByMonth(c)
 	})
+	logs.GET("/monthly/csv/:month", func(c *gin.Context) {
+		logController.GetByMonthCsv(c)
+	})
 	logs.GET("/id/:id", func(c *gin.Context) {
 		logController.GetById(c)
 	})
@@ -52,6 +56,7 @@ func jwtInit(config config.Config) error {
 		Realm:            config.GetJWTRealm(),
 		SigningAlgorithm: jwt.RS256,
 		PrivKeyFile:      config.GetSecretPath(),
+		Timeout:          time.Hour * 24 * 30,
 	})
 	if err != nil {
 		return err
