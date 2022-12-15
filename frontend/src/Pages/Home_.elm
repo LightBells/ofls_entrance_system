@@ -350,17 +350,15 @@ tableView model logs =
                 , value = .date
                 , toString = toYYYYMMDD
                 }
-            , Widget.stringColumn
+            , Widget.unsortableColumn
                 { title = "Entry Time"
                 , width = fill
-                , value = .entry_time
-                , toString = identity
+                , toString = .entry_time
                 }
-            , Widget.stringColumn
+            , Widget.unsortableColumn
                 { title = "Exit Time"
                 , width = fill
-                , value = .exit_time
-                , toString = identity
+                , toString = .exit_time
                 }
             , Widget.intColumn
                 { title = "purpose"
