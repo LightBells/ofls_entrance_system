@@ -12,7 +12,7 @@ type alias Endpoint =
 
 baseUrl : String
 baseUrl =
-    "http://localhost:8080/v1/"
+    "http://oflspc4:8080/v1/"
 
 
 login : Endpoint

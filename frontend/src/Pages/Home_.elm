@@ -55,6 +55,7 @@ type alias Model =
     , asc : Bool
     , show_menu : Bool
     , name_dict : Data Api.NameList.NameDict
+    , display_page : Int
     }
 
 
@@ -87,6 +88,7 @@ init user shared =
       , asc = False
       , show_menu = False
       , name_dict = name_dict
+      , display_page = 1
       }
     , effect
     )
@@ -108,6 +110,7 @@ type Msg
     | ClickedSelectButton
     | CsvDownload
     | GotCsv (Result Http.Error Bytes.Bytes)
+    | ChangedSelected Int
 
 
 type Field
@@ -140,7 +143,10 @@ update user msg model =
                     ( model, Effect.none )
 
         Updated Search query ->
-            ( { model | query = query }
+            ( { model
+                | query = query
+                , display_page = 1
+              }
             , Effect.none
             )
 
@@ -164,6 +170,13 @@ update user msg model =
                   }
                 , Effect.fromCmd (fetchLogList user)
                 )
+
+        ChangedSelected i ->
+            ( { model
+                | display_page = i
+              }
+            , Effect.none
+            )
 
         ToggledMenu ->
             ( { model | show_menu = not model.show_menu }
@@ -290,6 +303,28 @@ view _ model =
                                 ]
                     ]
                 ]
+            , { selected = Just model.display_page
+              , options =
+                    (case model.logs of
+                        Api.Data.Success logs ->
+                            List.range 1 (logs |> List.length |> (\i -> i // 100))
+
+                        _ ->
+                            []
+                    )
+                        |> List.map
+                            (\i ->
+                                { text = String.fromInt i
+                                , icon = always Element.none
+                                }
+                            )
+              , onSelect = \i -> Just <| ChangedSelected i
+              }
+                |> Widget.select
+                |> Widget.buttonRow
+                    { elementRow = Material.buttonRow
+                    , content = Material.outlinedButton Material.defaultPalette
+                    }
             , Components.Footer.view
             ]
     }
@@ -330,7 +365,7 @@ menuView model =
 tableView : Model -> List Api.Log.Log -> Element Msg
 tableView model logs =
     Widget.sortTable (Material.sortTable Material.defaultPalette)
-        { content = List.reverse logs
+        { content = List.reverse <| List.drop (100 * model.display_page) <| List.take (100 * (model.display_page + 1)) logs
         , columns =
             [ Widget.stringColumn
                 { title = "StudentID"
