@@ -12,7 +12,7 @@ import Bytes
 import Http
 import Json.Decode as Decode
 import Maybe
-import Utils.Date exposing (parseMMDDYYYY)
+import Utils.Date exposing (parseYYYYMMDD)
 import Utils.Json exposing (withField)
 
 
@@ -43,7 +43,7 @@ type alias LogList =
 rawLogToLog : RawLog -> Log
 rawLogToLog rawLog =
     { id = rawLog.id
-    , date = rawLog.date |> parseMMDDYYYY |> Maybe.withDefault 0
+    , date = rawLog.date |> parseYYYYMMDD |> Maybe.withDefault 0
     , entry_time = rawLog.entry_time
     , exit_time = rawLog.exit_time
     , purpose = rawLog.purpose

@@ -3,14 +3,14 @@ module Utils.Date exposing (..)
 import Date exposing (Date, format, fromCalendarDate, fromRataDie, numberToMonth, toRataDie)
 
 
-parseMMDDYYYY : String -> Maybe Int
-parseMMDDYYYY str =
+parseYYYYMMDD : String -> Maybe Int
+parseYYYYMMDD str =
     let
         parts =
             String.split "/" str
     in
     case parts of
-        [ month, day, year ] ->
+        [ year, month, day ] ->
             let
                 monthInt =
                     String.toInt month
@@ -43,6 +43,6 @@ toYYYYMMDD dateInt =
 
 convert : String -> String
 convert date =
-    parseMMDDYYYY date
+    parseYYYYMMDD date
         |> Maybe.map toYYYYMMDD
         |> Maybe.withDefault ""
