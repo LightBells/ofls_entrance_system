@@ -3,9 +3,12 @@ package external
 import (
 	"bytes"
 	"encoding/csv"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/LightBells/ofls_entrance_system/src/domain"
 )
@@ -19,55 +22,67 @@ func NewCSVHandler(path string) *CSVHandler {
 }
 
 func (h *CSVHandler) ReadCSV(logs *domain.LogSlice) error {
-	file, err := os.Open(h.path)
+
+	files, err := ioutil.ReadDir(h.path)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
-	reader := csv.NewReader(file)
-
-	// ヘッダーを読み飛ばす
-	_, err = reader.Read()
-	if err == io.EOF {
-		return err
-	}
-
-	for {
-		record, err := reader.Read()
-		if err == io.EOF {
-			break
+	for _, file := range files {
+		fileName := file.Name()
+		if !strings.HasSuffix(fileName, ".txt") {
+			continue
 		}
+		filePath := h.path + "/" + fileName
+		fmt.Println(filePath)
+		file, err := os.Open(filePath)
 		if err != nil {
 			return err
 		}
+		reader := csv.NewReader(file)
 
-		purpose := -1
-		if record[4] != "" {
-			purpose, err = strconv.Atoi(record[4])
+		// ヘッダーを読み飛ばす
+		_, err = reader.Read()
+		if err == io.EOF {
+			return err
+		}
+
+		for {
+			record, err := reader.Read()
+			if err == io.EOF {
+				break
+			}
 			if err != nil {
 				return err
 			}
-		}
 
-		satisfication := -1
-		if record[5] != "" {
-			satisfication, err = strconv.Atoi(record[5])
-			if err != nil {
-				return err
+			purpose := -1
+			if record[4] != "" {
+				purpose, err = strconv.Atoi(record[4])
+				if err != nil {
+					return err
+				}
 			}
-		}
 
-		log := domain.Log{
-			ID:            record[0],
-			Date:          record[1],
-			Entry_time:    record[2],
-			Exit_time:     record[3],
-			Purpose:       purpose,
-			Satisfication: satisfication,
-		}
+			satisfication := -1
+			if record[5] != "" {
+				satisfication, err = strconv.Atoi(record[5])
+				if err != nil {
+					return err
+				}
+			}
 
-		*logs = append(*logs, log)
+			log := domain.Log{
+				ID:            record[0],
+				Date:          record[1],
+				Entry_time:    record[2],
+				Exit_time:     record[3],
+				Purpose:       purpose,
+				Satisfication: satisfication,
+			}
+
+			*logs = append(*logs, log)
+		}
 	}
 	return nil
 }

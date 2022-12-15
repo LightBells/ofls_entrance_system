@@ -10,16 +10,21 @@ type alias Endpoint =
     String
 
 
+baseUrl : String
+baseUrl =
+    "http://localhost:8080/v1/"
+
+
 login : Endpoint
 login =
-    "http://localhost:8080/v1/login"
+    baseUrl ++ "login"
 
 
 listLog : Endpoint
 listLog =
-    "http://localhost:8080/v1/logs/"
+    baseUrl ++ "logs/"
 
 
 downloadCSV : Endpoint
 downloadCSV =
-    "http://localhost:8080/v1/logs/monthly/csv/"
+    baseUrl ++ "logs/monthly/csv/"

@@ -38,7 +38,7 @@ toYYYYMMDD dateInt =
         date =
             fromRataDie dateInt
     in
-    format "y/M/d" date
+    format "y/M/d(E)" date
 
 
 convert : String -> String

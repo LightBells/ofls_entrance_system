@@ -368,12 +368,6 @@ tableView model logs =
                 , value = .purpose
                 , toString = purposeToString
                 }
-            , Widget.intColumn
-                { title = "satisfaction"
-                , width = fill
-                , value = .satisfaction
-                , toString = satisfactionToString
-                }
             ]
         , asc = model.asc
         , sortBy = model.sort_by
@@ -509,19 +503,22 @@ purposeToString : Int -> String
 purposeToString purpose =
     case purpose of
         0 ->
-            "Gahaha"
+            "質問"
 
         1 ->
-            "Study"
+            "自習"
 
         2 ->
-            "Work"
+            "WS"
 
         3 ->
-            "Socialize"
+            "休憩"
 
         4 ->
-            "Hobbies"
+            "図書閲覧"
+
+        5 ->
+            "その他"
 
         _ ->
             ""

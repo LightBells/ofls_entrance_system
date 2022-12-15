@@ -37,7 +37,7 @@ decoder =
 parseCsv : String -> Result Decode.Error NameDict
 parseCsv csv =
     convertToDict <|
-        Decode.decodeCsv Decode.FieldNamesFromFirstRow decoder csv
+        Decode.decodeCustom { fieldSeparator = ':' } (Decode.CustomFieldNames [ "id", "name" ]) decoder csv
 
 
 convertToDict : Result Decode.Error (List Field) -> Result Decode.Error NameDict

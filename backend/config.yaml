@@ -1,5 +1,5 @@
 port: "8080"
-csv_path: "data/entrance.csv"
+csv_path: "data/"
 static_files: "./statics"
 secret_path: "../configs/private.key"
 jwt_realm: "ofls"
