@@ -88,7 +88,7 @@ init user shared =
       , asc = False
       , show_menu = False
       , name_dict = name_dict
-      , display_page = 1
+      , display_page = 0
       }
     , effect
     )
@@ -145,7 +145,7 @@ update user msg model =
         Updated Search query ->
             ( { model
                 | query = query
-                , display_page = 1
+                , display_page = 0
               }
             , Effect.none
             )
@@ -303,28 +303,6 @@ view _ model =
                                 ]
                     ]
                 ]
-            , { selected = Just model.display_page
-              , options =
-                    (case model.logs of
-                        Api.Data.Success logs ->
-                            List.range 1 (logs |> List.length |> (\i -> i // 100))
-
-                        _ ->
-                            []
-                    )
-                        |> List.map
-                            (\i ->
-                                { text = String.fromInt i
-                                , icon = always Element.none
-                                }
-                            )
-              , onSelect = \i -> Just <| ChangedSelected i
-              }
-                |> Widget.select
-                |> Widget.buttonRow
-                    { elementRow = Material.buttonRow
-                    , content = Material.outlinedButton Material.defaultPalette
-                    }
             , Components.Footer.view
             ]
     }
@@ -364,48 +342,69 @@ menuView model =
 
 tableView : Model -> List Api.Log.Log -> Element Msg
 tableView model logs =
-    Widget.sortTable (Material.sortTable Material.defaultPalette)
-        { content = List.reverse <| List.drop (100 * model.display_page) <| List.take (100 * (model.display_page + 1)) logs
-        , columns =
-            [ Widget.stringColumn
-                { title = "StudentID"
-                , value = .id
-                , toString = identity
-                , width = fill
-                }
-            , Widget.stringColumn
-                { title = "Student Name"
-                , width = fill
-                , toString = \id -> getStudentName model id
-                , value = .id
-                }
-            , Widget.intColumn
-                { title = "Date"
-                , width = fill
-                , value = .date
-                , toString = toYYYYMMDD
-                }
-            , Widget.unsortableColumn
-                { title = "Entry Time"
-                , width = fill
-                , toString = .entry_time
-                }
-            , Widget.unsortableColumn
-                { title = "Exit Time"
-                , width = fill
-                , toString = .exit_time
-                }
-            , Widget.intColumn
-                { title = "purpose"
-                , width = fill
-                , value = .purpose
-                , toString = purposeToString
-                }
-            ]
-        , asc = model.asc
-        , sortBy = model.sort_by
-        , onChange = ChangedSorting
-        }
+    column [ width fill, height fill ]
+        [ Widget.sortTable
+            (Material.sortTable Material.defaultPalette)
+            { content = List.reverse <| List.drop (100 * model.display_page) <| List.take (100 * (model.display_page + 1)) logs
+            , columns =
+                [ Widget.stringColumn
+                    { title = "StudentID"
+                    , value = .id
+                    , toString = identity
+                    , width = fill
+                    }
+                , Widget.stringColumn
+                    { title = "Student Name"
+                    , width = fill
+                    , toString = \id -> getStudentName model id
+                    , value = .id
+                    }
+                , Widget.intColumn
+                    { title = "Date"
+                    , width = fill
+                    , value = .date
+                    , toString = toYYYYMMDD
+                    }
+                , Widget.unsortableColumn
+                    { title = "Entry Time"
+                    , width = fill
+                    , toString = .entry_time
+                    }
+                , Widget.unsortableColumn
+                    { title = "Exit Time"
+                    , width = fill
+                    , toString = .exit_time
+                    }
+                , Widget.intColumn
+                    { title = "purpose"
+                    , width = fill
+                    , value = .purpose
+                    , toString = purposeToString
+                    }
+                ]
+            , asc = model.asc
+            , sortBy = model.sort_by
+            , onChange = ChangedSorting
+            }
+        , el [ centerX ]
+            ({ selected = Just model.display_page
+             , options =
+                List.range 1 (logs |> List.length |> (\i -> i // 100))
+                    |> List.map
+                        (\i ->
+                            { text = String.fromInt i
+                            , icon = always Element.none
+                            }
+                        )
+             , onSelect = \i -> Just <| ChangedSelected i
+             }
+                |> Widget.select
+                |> Widget.buttonRow
+                    { elementRow = Material.buttonRow
+                    , content = Material.outlinedButton Material.defaultPalette
+                    }
+            )
+        ]
 
 
 
